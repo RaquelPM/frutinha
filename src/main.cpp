@@ -14,6 +14,7 @@ string cascadeName;
 int main()
 {
     VideoCapture capture;
+    
     Mat frame;
     bool tryflip;
     CascadeClassifier cascade;
@@ -31,28 +32,32 @@ int main()
         cerr << "ERROR: Could not load classifier cascade" << endl;
         return -1;
     }
-
-    //    if(!capture.open("video.mp4")) // para testar com um video
-    if (!capture.open(2))
+    
+    if (!capture.open(0))
     {
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
     }
 
+    cout << "X: " << capture.get(CAP_PROP_FRAME_WIDTH) << endl;
+    cout << "Y: " << capture.get(CAP_PROP_FRAME_HEIGHT) << endl; 
+
+
     if (capture.isOpened())
     {
         cout << "Video capturing has been started ..." << endl;
 
-        int x = 1;
-
+        int x = 0;
+        
         for (;;)
         {
             // x *= 2;
+
             capture >> frame;
             if (frame.empty())
                 break;
 
-            detectAndDraw(frame, cascade, scale, tryflip, x, 100);
+            detectAndDraw(frame, cascade, scale, tryflip, x, 0);
 
             char c = (char)waitKey(10);
             if (c == 27 || c == 'q' || c == 'Q')
@@ -126,8 +131,8 @@ void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryf
     }
 
     // Desenha uma imagem
-    Mat overlay = cv::imread("./assets/orange.png", IMREAD_UNCHANGED);
-    drawTransparency(img, overlay, x, y);
+    Mat orange = cv::imread("./assets/orange.png", IMREAD_UNCHANGED);
+    drawTransparency(img, orange, x, y);
 
     // Desenha quadrados com transparencia
     double alpha = 0.3;

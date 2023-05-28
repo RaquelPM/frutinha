@@ -14,6 +14,7 @@ LIBS = `pkg-config --cflags opencv4` `pkg-config --libs --static opencv4`
 all: $(EXECUTABLE)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) $(LIBS) -c $< -o $@
 
 $(EXECUTABLE): $(OBJS)
