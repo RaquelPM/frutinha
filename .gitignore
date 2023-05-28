@@ -1,4 +1,4 @@
 output
 *.out
 .vscode
-obj/*
+obj/*.o

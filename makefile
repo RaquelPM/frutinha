@@ -21,5 +21,3 @@ $(EXECUTABLE): $(OBJS)
 
 clean:
 	rm -f $(OBJDIR)/*.o $(EXECUTABLE)
-
-	
