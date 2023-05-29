@@ -24,6 +24,11 @@ int Item::getY(){
     return this->cordY;
 }
 
+int Item::getSize(){
+
+    return this->size;
+}
+
 int Item::getType(){
 
     return this->type;
@@ -42,4 +47,9 @@ void Item::setY(int y){
 void Item::setType(int type){
 
     this->type = type;
+}
+
+bool Item::isOutOfBound(int maxY){
+
+    return (this->cordY + this->size - 100 > maxY);
 }
