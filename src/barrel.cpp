@@ -1,5 +1,8 @@
 #include "../header/barrel.hpp"
 
+const int Barrel::sizeBarrelX = 100;
+const int Barrel::sizeBarrelY = 100;
+
 Barrel::Barrel() : Item(){
 
     setType(BARRIL);

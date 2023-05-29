@@ -6,11 +6,11 @@
 
 class Barrel : public Item {
 
-    const static int sizeBarrelX = 180;
-    const static int sizeBarrelY = 180;
-    
     public:
 
+        const static int sizeBarrelX;
+        const static int sizeBarrelY;
+    
         Barrel();
         Barrel(int x, int y);
         std::pair<int, int> getSize();
