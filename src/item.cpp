@@ -7,11 +7,17 @@ Item::Item(){
     setType(0);
 }
 
-Item::Item(int x, int y, int type){
+Item::Item(int x, int y, int type, string pathPng){
 
-    setX(y);
-    setY(x);
+    setX(x);
+    setY(y);
     setType(type);
+    setPathPng(pathPng);
+}
+
+string Item::getPNG(){
+
+    return this->pathPng;
 }
 
 int Item::getX(){
@@ -42,6 +48,11 @@ void Item::setX(int x){
 void Item::setY(int y){
 
     this->cordY = y;
+}
+
+void Item::setPathPng(string pp){
+
+    this->pathPng = pp;
 }
 
 void Item::setType(int type){

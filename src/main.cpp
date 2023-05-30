@@ -3,17 +3,29 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include <iostream>
+#include <vector>
+#include "../header/item.hpp"
+#include "../header/barrel.hpp"
+
 
 using namespace std;
 using namespace cv;
 
-void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, int x, int y);
+void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item> items);
 
 string cascadeName;
 
 int main()
 {
     VideoCapture capture;
+    Barrel barrel(80, 0);
+    vector<Item> frutas;
+    Item laranja(210, 0, 0, "assets/orange.png");
+    Item morango(200, 0, 1, "assets/watermelon.png");
+
+    
+    frutas.push_back(laranja);
+    frutas.push_back(morango);
     
     Mat frame;
     bool tryflip;
@@ -47,21 +59,39 @@ int main()
     {
         cout << "Video capturing has been started ..." << endl;
 
-        int x = 0;
+        int y = barrel.getY();
+        int x = barrel.getX();
         
-        for (;;)
+        while(1)
         {
-            // x *= 2;
-
             capture >> frame;
             if (frame.empty())
                 break;
 
-            detectAndDraw(frame, cascade, scale, tryflip, x, 0);
+            for(int i = 0; i < frutas.size(); i++)
+            {
+                int vel = 5;
+                if(!(frutas[i].getSize() + frutas[i].getY() + vel>= 720))
+                    frutas[i].setY(frutas[i].getY() + vel);
+                else if(!(frutas[i].getSize() + frutas[i].getY() + 1 >= 720)){
+                    frutas[i].setY(frutas[i].getY() + 1);
+                }
+
+            // if(!(laranja.getSize() + x + vel>= 1280))
+            //     x += vel;
+            // else if(!(laranja.getSize() + x + 1 >= 1280)){
+            //     x += 1;
+            // }
+            
+            
+
+            }
+            detectAndDraw(frame, cascade, scale, tryflip, frutas);
 
             char c = (char)waitKey(10);
             if (c == 27 || c == 'q' || c == 'Q')
                 break;
+            
         }
     }
 
@@ -94,7 +124,7 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region)
     addWeighted(rectImg, alpha, roi, 1.0 - alpha, 0, roi);
 }
 
-void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, int x, int y)
+void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item> items)
 {
     double t = 0;
     vector<Rect> faces;
@@ -122,22 +152,46 @@ void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryf
     t = (double)getTickCount() - t;
     printf("detection time = %g ms\n", t * 1000 / getTickFrequency());
     // PERCORRE AS FACES ENCONTRADAS
-    for (size_t i = 0; i < faces.size(); i++)
-    {
-        Rect r = faces[i];
-        rectangle(img, Point(cvRound(r.x * scale), cvRound(r.y * scale)),
-                  Point(cvRound((r.x + r.width - 1) * scale), cvRound((r.y + r.height - 1) * scale)),
-                  color, 3);
+    Rect r;
+
+    for(int i = 0; i < items.size(); i++){
+
+
+        Mat orange = cv::imread(items[i].getPNG(), IMREAD_UNCHANGED);
+        drawTransparency(img, orange, items[i].getX(), items[i].getY());
+
     }
+    
+    try{
+
+        
+    
+        if(!(faces.empty())){
+            r = faces[0];
+            rectangle(img, Point(cvRound(r.x * scale), cvRound(r.y * scale)),
+                        Point(cvRound((r.x + r.width - 1) * scale), cvRound((r.y + r.height - 1) * scale)),
+                        color, 3);
+            // item.setX(r.x);
+            // item.setY(r.y);
+            
+            
+            // if(!(barrel.isOutOfBound(1280, 720))){
+            //     drawTransparency(img, orange, r.x, r.y);
+            // }
+            // else{
+            //     cout << "FORA\n";
+            // }
+            
+        }
+    }
+    catch(cv::Exception e){
+        cout << "ERRO\n";
+
+    }
+    
 
     // Desenha uma imagem
-    Mat orange = cv::imread("./assets/orange.png", IMREAD_UNCHANGED);
-    drawTransparency(img, orange, x, y);
-
-    // Desenha quadrados com transparencia
-    double alpha = 0.3;
-    drawTransRect(img, Scalar(0, 255, 0), alpha, Rect(0, 0, 200, 200));
-    drawTransRect(img, Scalar(255, 0, 0), alpha, Rect(200, 0, 200, 200));
+    
 
     // Desenha um texto
     color = Scalar(0, 0, 255);

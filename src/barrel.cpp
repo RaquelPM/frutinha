@@ -1,14 +1,14 @@
 #include "../header/barrel.hpp"
 
-const int Barrel::sizeBarrelX = 100;
-const int Barrel::sizeBarrelY = 100;
+const int Barrel::sizeBarrelX = 325;
+const int Barrel::sizeBarrelY = 164;
 
 Barrel::Barrel() : Item(){
 
     setType(BARRIL);
 }
 
-Barrel::Barrel(int x, int y) : Item(x, y, BARRIL){}
+Barrel::Barrel(int x, int y) : Item(x, y, BARRIL, "assets/cesta.png"){}
 
 std::pair<int, int> Barrel::getSize(){
 

@@ -4,6 +4,7 @@
 #include "item.hpp"
 #include <vector>
 #include <ctime>
+
 class Game {
 
     public:
@@ -13,4 +14,9 @@ class Game {
         int maxScore;
         int lives;
         int maxLives;
+
+        void move(Item item);
+        void addScore();
+        void addItem();
+        void reduceLife();
 };
