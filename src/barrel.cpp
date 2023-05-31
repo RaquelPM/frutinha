@@ -1,7 +1,8 @@
 #include "../header/barrel.hpp"
+#include <iostream>
 
-const int Barrel::sizeBarrelX = 325;
-const int Barrel::sizeBarrelY = 164;
+const int Barrel::sizeBarrelX = 163;
+const int Barrel::sizeBarrelY = 82;
 
 Barrel::Barrel() : Item(){
 
@@ -32,13 +33,23 @@ bool Barrel::checkCollisionItem(Item item){
     int barrelX = this->getX();
     int barrelY = this->getY();
 
-    bool isInRangeLeft, isInRangeRight, isInRangeUp;
+    bool isInRangeLeft, isInRangeRight, isInBetween, isInRangeUp;
     //checks if item is in range of barrel, execpt if part of the item is bellow the barrel
 
     isInRangeLeft = (barrelX >= itemX and barrelX <= itemX + itemSize);
     isInRangeRight = (barrelX + Barrel::sizeBarrelX >= itemX and barrelX + Barrel::sizeBarrelX <= itemX + itemSize);
+    isInBetween = (barrelX <= itemX and barrelX + Barrel::sizeBarrelX >= itemX + itemSize);
     isInRangeUp = (barrelY >= itemY and barrelY <= itemY + itemSize);
 
+    if(isInRangeLeft){
+        cout << "left" << endl;
+    }
+    if(isInRangeRight){
+        cout << "right" << endl;
+    }
+    if(isInRangeUp){
+        cout << "up" << endl;
+    }
 
-    return ((isInRangeLeft or isInRangeRight) and isInRangeUp);
+    return ((isInRangeLeft or isInRangeRight or isInBetween) and isInRangeUp);
 }

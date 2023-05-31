@@ -3,22 +3,20 @@
 #include <iostream>
 
 Game::Game(int width, int height){
-
     setWidth(width);
     setHeight(height);
     readMaxScore();
     setMaxLives(3);
     setScore(0);
-    setLives(0);    
+    setLives(3);
+    setVelocity(5);
 }
 
-void Game::fall(Item item){
-
+void Game::fall(Item *item){
     item.setY(item.getY() + getVelocity());
 }
 
 void Game::move(Barrel barrel, int x, int y){
-
     barrel.setX(x);
     barrel.setY(y);
 }
@@ -29,13 +27,13 @@ void Game::addScore(){
 }
 
 void Game::addFruit(){
-
     int x = rand() % (width - Item::size);
     int y = 0;
     int type = rand() % 4;
 
     Item item(x, y, type);
-    this->items.push_back(item);
+    items.push_back(&item);
+    cout << "Size1: " << items.size() << endl;
 }
 
 void Game::addBomb(){
@@ -44,34 +42,42 @@ void Game::addBomb(){
     int y = 0;
 
     Item item(x, y, BOMBA);
-    this->items.push_back(item);
+    items.push_back(&item);
 }
 
 void Game::reduceLife(){
-    
     if(getLives() > 0){
         setLives(getLives() - 1);
     }else{
         end();
+        throw ("Game Over, your points: " + to_string(getScore()));
     }
 }
 
 void Game::frame(){
-
     for(size_t i = 0; i < items.size(); i++){
 
         fall(items[i]);
 
-        if(items[i].isOutOfBound(600)){
-
+        if(items[i]->isOutOfBound(height) && i != BOMBA){
             items.erase(items.begin() + i);
-            reduceLife();
+            try {
+                reduceLife();
+            } catch(const char* msg) {
+                throw msg;
+            }
+        } else if(barrel.checkCollisionItem(*items[i])){
+            if(items[i]->getType() == BOMBA){
+                reduceLife();
+            }else{
+                addScore();
+            }
+            items.erase(items.begin() + i);
         }
     }
 }
 
 void Game::end(){
-
     if(getScore() > getMaxScore()){
         setMaxScore(getScore());
         writeMaxScore();
@@ -136,6 +142,14 @@ int Game::getLives(){
 int Game::getVelocity(){
 
     return this->velocity;
+}
+
+vector<Item*> Game::getItems(){
+    return items;
+}
+
+Barrel& Game::getBarrel(){
+    return this->barrel;
 }
 
 void Game::readMaxScore(){

@@ -5,7 +5,7 @@
 #include <vector>
 #include "item.hpp"
 #include "barrel.hpp"
-
+#include <iostream>
 using namespace std;
 using namespace cv;
 
@@ -28,7 +28,7 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region)
     addWeighted(rectImg, alpha, roi, 1.0 - alpha, 0, roi);
 }
 
-void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item> items, Barrel barrel)
+void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item> items, Barrel &barrel)
 {
     double t = 0;
     vector<Rect> faces;
@@ -52,13 +52,11 @@ void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryf
     //printf("detection time = %g ms\n", t * 1000 / getTickFrequency());
     
     Rect r;
-
+    cout << "Size: " << items.size() << endl;
     for(size_t i = 0; i < items.size(); i++){
-
-
+        cout << items[i].getPNG() << endl;
         Mat fruit = cv::imread(items[i].getPNG(), IMREAD_UNCHANGED);
         drawTransparency(img, fruit, items[i].getX(), items[i].getY());
-
     }
     
     if(!(faces.empty())){

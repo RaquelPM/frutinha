@@ -7,13 +7,13 @@
 
 class Game {
 
-    std::vector<Item> items;
+    std::vector<Item*> items;
     Barrel barrel;
     int maxScore;
     int maxLives;
     int score;
     int lives;
-    int velocity = 1;
+    int velocity;
     int width;
     int height;
     
@@ -21,7 +21,7 @@ class Game {
 
         Game(int width, int height);
 
-        void fall(Item item);
+        void fall(Item *item);
         void move(Barrel barrel, int x, int y);
         void addScore();
         void addFruit();
@@ -43,6 +43,8 @@ class Game {
         int getScore();
         int getLives();
         int getVelocity();
+        vector<Item*> getItems();
+        Barrel& getBarrel();
 
         void readMaxScore();
         void writeMaxScore();

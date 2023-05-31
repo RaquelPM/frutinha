@@ -9,14 +9,12 @@ string paths[] = {"assets/orange.png",
     "assets/cesta.png"};
 
 Item::Item(){
-
     setX(0);
     setY(0);
     setType(0);
 }
 
 Item::Item(int x, int y, int type){
-
     setX(x);
     setY(y);
     setType(type);
@@ -59,16 +57,13 @@ void Item::setY(int y){
 }
 
 void Item::setPathPng(){
-
     this->pathPng = paths[type];
 }
 
 void Item::setType(int type){
-
     this->type = type;
 }
 
 bool Item::isOutOfBound(int maxY){
-
     return (this->cordY + this->size >= maxY);
 }
