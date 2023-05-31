@@ -1,5 +1,13 @@
 #include "../header/item.hpp"
 
+
+string paths[] = {"assets/orange.png",
+    "assets/watermelon.png",
+    "assets/strawberry.png",
+    "assets/kiwi.png",
+    "assets/bomb.png",
+    "assets/cesta.png"};
+
 Item::Item(){
 
     setX(0);
@@ -7,12 +15,12 @@ Item::Item(){
     setType(0);
 }
 
-Item::Item(int x, int y, int type, string pathPng){
+Item::Item(int x, int y, int type){
 
     setX(x);
     setY(y);
     setType(type);
-    setPathPng(pathPng);
+    setPathPng();
 }
 
 string Item::getPNG(){
@@ -50,9 +58,9 @@ void Item::setY(int y){
     this->cordY = y;
 }
 
-void Item::setPathPng(string pp){
+void Item::setPathPng(){
 
-    this->pathPng = pp;
+    this->pathPng = paths[type];
 }
 
 void Item::setType(int type){
@@ -62,5 +70,5 @@ void Item::setType(int type){
 
 bool Item::isOutOfBound(int maxY){
 
-    return (this->cordY + this->size - 100 > maxY);
+    return (this->cordY + this->size >= maxY);
 }

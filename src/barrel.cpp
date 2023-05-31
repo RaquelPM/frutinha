@@ -8,7 +8,7 @@ Barrel::Barrel() : Item(){
     setType(BARRIL);
 }
 
-Barrel::Barrel(int x, int y) : Item(x, y, BARRIL, "assets/cesta.png"){}
+Barrel::Barrel(int x, int y) : Item(x, y, BARRIL){}
 
 std::pair<int, int> Barrel::getSize(){
 
