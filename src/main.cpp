@@ -8,23 +8,9 @@ string cascadeName;
 
 int main()
 {
+    srand(time(NULL));
+  
     VideoCapture capture;
-
-    int width = capture.get(CAP_PROP_FRAME_WIDTH);
-    int height = capture.get(CAP_PROP_FRAME_HEIGHT); 
-
-    Game game(width, height);
-    game.addFruit();
-
-    Barrel barrel(0, 0);
-    vector<Item> frutas;
-    Item laranja(210, 0, 0);
-    Item morango(200, 0, 1);
-    cout << morango.getPNG() << endl;
-    cout << barrel.getPNG() << endl;
-    
-    frutas.push_back(laranja);
-    frutas.push_back(morango);
     
     Mat frame;
     bool tryflip;
@@ -52,6 +38,12 @@ int main()
 
     if (capture.isOpened())
     {
+        
+        int width = capture.get(CAP_PROP_FRAME_WIDTH);
+        int height = capture.get(CAP_PROP_FRAME_HEIGHT); 
+
+        Game game(width, height);
+        Barrel barrel(0, 0);
         cout << "Video capturing has been started ..." << endl;        
     
         while(true)
@@ -62,22 +54,12 @@ int main()
 
             try{
                 game.frame();
-            } catch(const char* msg){
+            } catch(string msg){
                 cout << msg << endl; // desenhar na tela
                 break;
-            }
+            } 
 
-            //int vel = 2;
-            
-            /*for(size_t i = 0; i < frutas.size(); i++){
-
-                frutas[i].setY(frutas[i].getY() + vel);
-                
-                if(frutas[i].isOutOfBound(height) or barrel.checkCollisionItem(frutas[i]))
-                    frutas.erase(frutas.begin() + i);
-            }*/
-
-            detectAndDraw(frame, cascade, scale, tryflip, game.getItems(), game.getBarrel());
+            detectAndDraw(frame, cascade, scale, tryflip, game.getItems(), game.getBarrel(), game.getScore());
 
             char c = (char)waitKey(10);
             if (c == 27 || c == 'q' || c == 'Q')

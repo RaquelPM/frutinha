@@ -3,6 +3,7 @@
 #include <iostream>
 
 Game::Game(int width, int height){
+    frameCount = 0; 
     setWidth(width);
     setHeight(height);
     readMaxScore();
@@ -13,7 +14,7 @@ Game::Game(int width, int height){
 }
 
 void Game::fall(Item *item){
-    item.setY(item.getY() + getVelocity());
+    item->setY(item->getY() + getVelocity());
 }
 
 void Game::move(Barrel barrel, int x, int y){
@@ -31,22 +32,20 @@ void Game::addFruit(){
     int y = 0;
     int type = rand() % 4;
 
-    Item item(x, y, type);
-    items.push_back(&item);
-    cout << "Size1: " << items.size() << endl;
+    Item *item = new Item(x, y, type);
+    items.push_back(item);
 }
 
 void Game::addBomb(){
-
     int x = rand() % (width - Item::size);
     int y = 0;
 
-    Item item(x, y, BOMBA);
-    items.push_back(&item);
+    Item *item = new Item(x, y, BOMBA);
+    items.push_back(item);
 }
 
 void Game::reduceLife(){
-    if(getLives() > 0){
+    if(getLives() > 1){
         setLives(getLives() - 1);
     }else{
         end();
@@ -55,18 +54,31 @@ void Game::reduceLife(){
 }
 
 void Game::frame(){
+    frameCount++;
+    if(frameCount % (int)(60 * 80/(80 + score)) == 0){
+        addFruit();
+        frameCount = 0;
+    }
+    if(items.size() % 10 == 0){
+        addBomb();
+    }
+    
     for(size_t i = 0; i < items.size(); i++){
 
         fall(items[i]);
 
-        if(items[i]->isOutOfBound(height) && i != BOMBA){
-            items.erase(items.begin() + i);
-            try {
-                reduceLife();
-            } catch(const char* msg) {
-                throw msg;
+        if(items[i]->isOutOfBound(height)){
+
+            if(items[i]->getType() != BOMBA){
+                try {
+                    reduceLife();
+                }catch(const char* msg) {
+                    throw msg;
+                }
             }
+            items.erase(items.begin() + i);
         } else if(barrel.checkCollisionItem(*items[i])){
+
             if(items[i]->getType() == BOMBA){
                 reduceLife();
             }else{
@@ -144,7 +156,8 @@ int Game::getVelocity(){
     return this->velocity;
 }
 
-vector<Item*> Game::getItems(){
+vector<Item*>& Game::getItems(){
+    
     return items;
 }
 

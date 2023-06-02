@@ -4,9 +4,7 @@
 const int Barrel::sizeBarrelX = 163;
 const int Barrel::sizeBarrelY = 82;
 
-Barrel::Barrel() : Item(){
-
-    setType(BARRIL);
+Barrel::Barrel() : Item(0, 0, BARRIL){
 }
 
 Barrel::Barrel(int x, int y) : Item(x, y, BARRIL){}
@@ -40,16 +38,6 @@ bool Barrel::checkCollisionItem(Item item){
     isInRangeRight = (barrelX + Barrel::sizeBarrelX >= itemX and barrelX + Barrel::sizeBarrelX <= itemX + itemSize);
     isInBetween = (barrelX <= itemX and barrelX + Barrel::sizeBarrelX >= itemX + itemSize);
     isInRangeUp = (barrelY >= itemY and barrelY <= itemY + itemSize);
-
-    if(isInRangeLeft){
-        cout << "left" << endl;
-    }
-    if(isInRangeRight){
-        cout << "right" << endl;
-    }
-    if(isInRangeUp){
-        cout << "up" << endl;
-    }
 
     return ((isInRangeLeft or isInRangeRight or isInBetween) and isInRangeUp);
 }

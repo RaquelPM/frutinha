@@ -28,7 +28,7 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region)
     addWeighted(rectImg, alpha, roi, 1.0 - alpha, 0, roi);
 }
 
-void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item> items, Barrel &barrel)
+void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item*> items, Barrel &barrel, int score)
 {
     double t = 0;
     vector<Rect> faces;
@@ -52,11 +52,9 @@ void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryf
     //printf("detection time = %g ms\n", t * 1000 / getTickFrequency());
     
     Rect r;
-    cout << "Size: " << items.size() << endl;
     for(size_t i = 0; i < items.size(); i++){
-        cout << items[i].getPNG() << endl;
-        Mat fruit = cv::imread(items[i].getPNG(), IMREAD_UNCHANGED);
-        drawTransparency(img, fruit, items[i].getX(), items[i].getY());
+        Mat fruit = cv::imread(items[i]->getPNG(), IMREAD_UNCHANGED);
+        drawTransparency(img, fruit, items[i]->getX(), items[i]->getY());
     }
     
     if(!(faces.empty())){
@@ -75,13 +73,14 @@ void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryf
             try{
                 drawTransparency(img, matBarrel, r.x, r.y);
             }catch(cv::Exception e){};
-        }
+        } 
         
     }
 
     // Desenha um texto
-    color = Scalar(0, 0, 255);
-    putText(img, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+    color = Scalar(127, 127, 0);
+    putText(img, "Placar: " + to_string(score), Point(50, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+
 
     // Desenha o frame na tela
     imshow("result", img);

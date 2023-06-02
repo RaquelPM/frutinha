@@ -9,6 +9,7 @@ class Game {
 
     std::vector<Item*> items;
     Barrel barrel;
+    int frameCount;
     int maxScore;
     int maxLives;
     int score;
@@ -43,7 +44,7 @@ class Game {
         int getScore();
         int getLives();
         int getVelocity();
-        vector<Item*> getItems();
+        vector<Item*>& getItems();
         Barrel& getBarrel();
 
         void readMaxScore();
