@@ -28,12 +28,27 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region)
     addWeighted(rectImg, alpha, roi, 1.0 - alpha, 0, roi);
 }
 
-void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, vector<Item*> items, Barrel &barrel, int score)
+void drawGameOver(Mat &img, Game &game)
+{
+    flip(img, img, 1);
+    Scalar black = Scalar(0, 0, 0);
+    drawTransRect(img, black, 0.8, Rect( 0, 0, game.getWidth(), game.getHeight()));
+    putText(img, "Game Over", Point(game.getWidth()/2 - 200, game.getHeight()/2), FONT_HERSHEY_PLAIN , 4, Scalar(0,0,255)); // fonte
+    putText(img, "Placar: " + to_string(game.getScore()), Point(game.getWidth()/2 - 100, game.getHeight()/2 + 50), FONT_HERSHEY_PLAIN , 2, Scalar(255,255,255)); // fonte 
+    putText(img, "Recorde: " + to_string(game.getMaxScore()), Point(game.getWidth()/2 - 100, game.getHeight()/2 + 100), FONT_HERSHEY_PLAIN , 2, Scalar(255,255,255)); // fonte
+    putText(img, "Pressione R para reniciar", Point(game.getWidth() - 200, game.getHeight() - 50), FONT_HERSHEY_PLAIN , 0.8, Scalar(255,255,255)); // fonte
+    imshow("result", img);
+    waitKey(0);
+}
+
+void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, Game &game)
 {
     double t = 0;
     vector<Rect> faces;
     Mat gray, smallImg;
     Scalar color = Scalar(255, 0, 0);
+
+    vector<Item*> items = game.getItems();
 
     if (tryflip)
     {
@@ -59,29 +74,35 @@ void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryf
     
     if(!(faces.empty())){
         r = faces[0];
-        rectangle(img, Point(cvRound(r.x * scale), cvRound(r.y * scale)),
+       /*  rectangle(img, Point(cvRound(r.x * scale), cvRound(r.y * scale)),
                     Point(cvRound((r.x + r.width - 1) * scale), cvRound((r.y + r.height - 1) * scale)),
-                    color, 3);
-        
-        barrel.setX(r.x);
-        barrel.setY(r.y);
-        
-        if(!(barrel.isOutOfBound(1280, 720))){
-        
-            Mat matBarrel = cv::imread(barrel.getPNG(), IMREAD_UNCHANGED);
-
-            try{
-                drawTransparency(img, matBarrel, r.x, r.y);
-            }catch(cv::Exception e){};
-        } 
+                    color, 3); */
+        game.getBarrel().setX(r.x + r.width/2 - game.getBarrel().getSize().first/2);
+        game.getBarrel().setY(r.y - game.getBarrel().getSize().second);
         
     }
 
+    if(!(game.getBarrel().isOutOfBound(game.getWidth(), game.getHeight()))){
+        
+        Mat matBarrel = cv::imread(game.getBarrel().getPNG(), IMREAD_UNCHANGED);
+
+        try{
+            drawTransparency(img, matBarrel, game.getBarrel().getX(), game.getBarrel().getY());
+        }catch(Exception e){};
+    } 
+
     // Desenha um texto
-    color = Scalar(127, 127, 0);
-    putText(img, "Placar: " + to_string(score), Point(50, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+    color = Scalar(0, 0, 0);
+    putText(img, "Placar: " + to_string(game.getScore()), Point(50, 50), FONT_HERSHEY_PLAIN , 2, color); // fonte
 
+    Mat matHeart = cv::imread("assets/heart.png", IMREAD_UNCHANGED);
 
+    try{
+        for(int i =0; i< game.getLives(); i++)
+            drawTransparency(img, matHeart, game.getWidth() - 100 - (i*50), 25);
+    }catch(string e){
+        cout << e << endl;
+    };
     // Desenha o frame na tela
     imshow("result", img);
 }

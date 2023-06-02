@@ -56,13 +56,14 @@ void Game::reduceLife(){
 void Game::frame(){
     frameCount++;
     if(frameCount % (int)(60 * 80/(80 + score)) == 0){
+   
         addFruit();
+        if(rand() % 10 == 0){
+            addBomb();
+        }
         frameCount = 0;
     }
-    if(items.size() % 10 == 0){
-        addBomb();
-    }
-    
+
     for(size_t i = 0; i < items.size(); i++){
 
         fall(items[i]);
@@ -76,6 +77,8 @@ void Game::frame(){
                     throw msg;
                 }
             }
+
+            delete items[i];
             items.erase(items.begin() + i);
         } else if(barrel.checkCollisionItem(*items[i])){
 
@@ -84,6 +87,7 @@ void Game::frame(){
             }else{
                 addScore();
             }
+            delete items[i];
             items.erase(items.begin() + i);
         }
     }
@@ -163,6 +167,16 @@ vector<Item*>& Game::getItems(){
 
 Barrel& Game::getBarrel(){
     return this->barrel;
+}
+
+int Game::getWidth(){
+
+    return this->width;
+}
+
+int Game::getHeight(){
+
+    return this->height;
 }
 
 void Game::readMaxScore(){

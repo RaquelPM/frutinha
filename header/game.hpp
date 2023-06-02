@@ -46,6 +46,8 @@ class Game {
         int getVelocity();
         vector<Item*>& getItems();
         Barrel& getBarrel();
+        int getWidth();
+        int getHeight();
 
         void readMaxScore();
         void writeMaxScore();
