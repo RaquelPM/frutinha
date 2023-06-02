@@ -4,13 +4,51 @@
 #include "item.hpp"
 #include <vector>
 #include <ctime>
+
 class Game {
 
+    std::vector<Item*> items;
+    Barrel barrel;
+    int frameCount;
+    int maxScore;
+    int maxLives;
+    int score;
+    int lives;
+    int velocity;
+    int width;
+    int height;
+    
     public:
-        std::vector<Item> items;
-        Barrel barrel;
-        int score;
-        int maxScore;
-        int lives;
-        int maxLives;
+
+        Game(int width, int height);
+
+        void fall(Item *item);
+        void move(Barrel barrel, int x, int y);
+        void addScore();
+        void addFruit();
+        void addBomb();
+        void reduceLife();
+        void frame();
+        void end();
+        
+        void setMaxScore(int maxScore);
+        void setMaxLives(int maxLives);
+        void setScore(int score);
+        void setLives(int lives);
+        void setVelocity(int vel);
+        void setWidth(int width);
+        void setHeight(int height);
+
+        int getMaxScore();
+        int getMaxLives();
+        int getScore();
+        int getLives();
+        int getVelocity();
+        vector<Item*>& getItems();
+        Barrel& getBarrel();
+        int getWidth();
+        int getHeight();
+
+        void readMaxScore();
+        void writeMaxScore();
 };
