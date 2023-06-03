@@ -1,13 +1,14 @@
 #pragma once
 
 #include "barrel.hpp"
-#include "item.hpp"
 #include <vector>
 #include <ctime>
+#include <thread>
 
 class Game {
 
     std::vector<Item*> items;
+    vector<thread*> threads;
     Barrel barrel;
     int frameCount;
     int maxScore;
@@ -21,6 +22,7 @@ class Game {
     public:
 
         Game(int width, int height);
+        ~Game();
 
         void fall(Item *item);
         void move(Barrel barrel, int x, int y);
@@ -30,6 +32,7 @@ class Game {
         void reduceLife();
         void frame();
         void end();
+        void playMusic(string path);
         
         void setMaxScore(int maxScore);
         void setMaxLives(int maxLives);

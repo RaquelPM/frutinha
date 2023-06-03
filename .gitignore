@@ -2,4 +2,4 @@ output
 *.out
 .vscode
 obj/*.o
-
+maxScore.txt

@@ -2,6 +2,13 @@
 #include <fstream>
 #include <iostream>
 
+
+void play(string path){
+
+    string command =  "play -q " + path;
+    system(command.c_str());
+}
+
 Game::Game(int width, int height){
     frameCount = 0; 
     setWidth(width);
@@ -11,6 +18,18 @@ Game::Game(int width, int height){
     setScore(0);
     setLives(3);
     setVelocity(5);
+}
+
+Game::~Game(){
+    
+    for(auto& item : items){
+        delete item;
+    }
+
+    for(auto& t : threads){
+        t->join();
+        delete t;
+    }
 }
 
 void Game::fall(Item *item){
@@ -46,6 +65,7 @@ void Game::addBomb(){
 
 void Game::reduceLife(){
     if(getLives() > 1){
+        playMusic("assets/loselife.wav");
         setLives(getLives() - 1);
     }else{
         end();
@@ -55,7 +75,7 @@ void Game::reduceLife(){
 
 void Game::frame(){
     frameCount++;
-    if(frameCount % (int)(60 * 80/(80 + score)) == 0){
+    if(frameCount % (int) (1+(40 * 80/(80 + score))) == 0){
    
         addFruit();
         if(rand() % 10 == 0){
@@ -83,8 +103,10 @@ void Game::frame(){
         } else if(barrel.checkCollisionItem(*items[i])){
 
             if(items[i]->getType() == BOMBA){
+                playMusic("assets/explosion.mp3");
                 reduceLife();
             }else{
+                playMusic("assets/collectfruit.mp3");
                 addScore();
             }
             delete items[i];
@@ -95,9 +117,23 @@ void Game::frame(){
 
 void Game::end(){
     if(getScore() > getMaxScore()){
+        playMusic("assets/win.mp3");
         setMaxScore(getScore());
         writeMaxScore();
+    }else{
+        playMusic("assets/lose.mp3");
     }
+}
+
+void Game::playMusic(string path){
+
+    if(threads.size() > 5){
+        threads[0]->join();
+        delete threads[0];
+        threads.erase(threads.begin());
+    }
+
+    threads.push_back(new thread(play, path));
 }
 
 void Game::setMaxScore(int maxScore){
@@ -182,12 +218,13 @@ int Game::getHeight(){
 void Game::readMaxScore(){
 
     ifstream file;
-    file.open("assets/maxScore.txt");
+    file.open("maxScore.txt");
 
     if(file.is_open()){
         file >> maxScore;
     }else{
-        cout << "Erro ao abrir arquivo" << endl;
+        setMaxScore(0);
+        writeMaxScore();
     }
 
     file.close();
@@ -196,7 +233,7 @@ void Game::readMaxScore(){
 void Game::writeMaxScore(){
 
     ofstream file;
-    file.open("assets/maxScore.txt");
+    file.open("maxScore.txt");
 
     if(file.is_open()){
         file << maxScore;

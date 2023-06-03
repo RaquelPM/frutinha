@@ -3,9 +3,9 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include <vector>
-#include "item.hpp"
-#include "barrel.hpp"
+#include "game.hpp"
 #include <iostream>
+
 using namespace std;
 using namespace cv;
 
