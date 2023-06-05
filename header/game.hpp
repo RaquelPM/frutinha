@@ -22,7 +22,7 @@ class Game {
     public:
 
         Game(int width, int height);
-        ~Game();
+        virtual ~Game();
 
         void fall(Item *item);
         void move(Barrel barrel, int x, int y);

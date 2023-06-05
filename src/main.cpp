@@ -48,6 +48,24 @@ int main()
         int width = capture.get(CAP_PROP_FRAME_WIDTH);
         int height = capture.get(CAP_PROP_FRAME_HEIGHT);
 
+        while(frame.empty()){
+            capture >> frame;
+        }
+        
+        drawMenu(height, width);
+
+        while(true){
+            char c = (char)waitKey(10);
+                        
+            if(c == ' '){
+                break;
+            }
+
+            if(c == 'q' or c == 'Q'){
+                return 0;
+            }
+        }
+
         while(true){ 
             Game game(width, height);
             Barrel barrel(0, 0);

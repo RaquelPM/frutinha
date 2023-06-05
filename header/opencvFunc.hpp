@@ -2,6 +2,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
+#include "opencv2/opencv.hpp"
 #include <vector>
 #include "game.hpp"
 #include <iostream>
@@ -40,6 +41,19 @@ void drawGameOver(Mat &img, Game &game)
     imshow("result", img);
     waitKey(0);
 }
+
+void drawMenu(int height, int width)
+{
+    Mat background = imread("assets/background.jpg", IMREAD_UNCHANGED);
+    resize(background, background, Size(width, height));
+
+    drawTransRect(background, Scalar(0, 83, 144), 1, Rect( width/4 - 50, height/2 - 80, 400, 150));
+    putText(background, "Frutinha", Point(width/2 - 180, height/2), FONT_HERSHEY_PLAIN, 5, Scalar(0,193,82), 3); // fonte
+    putText(background, "Pressione barra de espaco para iniciar", Point(width/2 - 140, height/2+40), FONT_HERSHEY_PLAIN , 0.8, Scalar(255,255,255)); // fonte
+    imshow("result", background);
+    waitKey(0);
+}
+
 
 void detectAndDraw(Mat &img, CascadeClassifier &cascade, double scale, bool tryflip, Game &game)
 {
