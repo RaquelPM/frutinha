@@ -79,6 +79,10 @@ int main()
                     }  
                 } 
 
+                if(!alive){
+                    break;
+                }
+
                 detectAndDraw(frame, cascade, scale, tryflip, game);
 
                 char c = (char)waitKey(10);
